@@ -166,6 +166,7 @@
       <div class="mt-4 text-gray-medium text-sm">
         <p><i class="fa fa-lightbulb-o text-yellow-500 mr-2"></i>提示：点击下载按钮将直接调用迅雷进行下载，需确保已安装迅雷客户端</p>
         <p class="mt-2"><i class="fa fa-exclamation-circle text-orange-500 mr-2"></i>请遵守当地法律法规，合理使用网络资源</p>
+        <p class="mt-2"><i class="fa fa-info-circle text-primary mr-2"></i>若无法调用迅雷，可复制磁力链接后手动粘贴到迅雷中下载</p>
       </div>
     </div>
   </main>
@@ -194,25 +195,39 @@
       const thunderBtns = document.querySelectorAll('.thunder-download');
       const toast = document.getElementById('toast');
       
-      // 转换为迅雷协议链接
+      // 修复：完整的迅雷协议转换（前缀"AA" + 磁力链接 + 后缀"ZZ"再Base64）
       function convertToThunderLink(url) {
-        const base64Url = btoa(encodeURIComponent(url));
+        const thunderPrefix = "AA";
+        const thunderSuffix = "ZZ";
+        const fullUrl = thunderPrefix + encodeURIComponent(url) + thunderSuffix;
+        const base64Url = btoa(fullUrl);
         return `thunder://${base64Url}`;
       }
       
-      // 调用迅雷下载
+      // 修复：增强迅雷调用兼容性，添加用户交互确认
       function downloadWithThunder(link) {
         try {
-          const a = document.createElement('a');
-          a.href = link;
-          a.style.display = 'none';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          showToast('已调用迅雷下载');
+          // 先显示确认提示，避免浏览器拦截
+          if (confirm('即将调用迅雷下载，是否继续？')) {
+            // 方案1：直接跳转协议
+            window.location.href = link;
+            
+            // 方案2：备用a标签跳转（双重保障）
+            setTimeout(() => {
+              const a = document.createElement('a');
+              a.href = link;
+              a.target = '_blank';
+              a.style.display = 'none';
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+            }, 300);
+            
+            showToast('已调用迅雷下载，请稍候');
+          }
         } catch (err) {
           console.error('调用迅雷失败: ', err);
-          showToast('调用迅雷失败，请确保已安装迅雷');
+          showToast('调用失败！建议复制磁力链接手动粘贴到迅雷');
         }
       }
       
@@ -229,9 +244,10 @@
       // 复制全部按钮
       copyAllBtn.addEventListener('click', () => {
         navigator.clipboard.writeText(magnetLink).then(() => {
-          showToast('复制成功！');
+          showToast('磁力链接复制成功！');
         }).catch(err => {
           console.error('无法复制文本: ', err);
+          showToast('复制失败，请手动选择链接复制');
         });
       });
       
@@ -246,9 +262,10 @@
         btn.addEventListener('click', () => {
           const link = btn.getAttribute('data-link');
           navigator.clipboard.writeText(link).then(() => {
-            showToast('复制成功！');
+            showToast('磁力链接复制成功！');
           }).catch(err => {
             console.error('无法复制文本: ', err);
+            showToast('复制失败，请手动选择链接复制');
           });
         });
       });
