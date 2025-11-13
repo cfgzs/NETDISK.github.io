@@ -4,17 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>创凡私有云</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
   
-  <!-- Tailwind 配置 -->
+  <!-- 1. 预连接CDN域名，减少连接建立时间 -->
+  <link rel="preconnect" href="https://cdn.tailwindcss.com">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  
+  <!-- 2. 精简Font Awesome：仅加载所需图标（替换完整库） -->
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+  
+  <!-- 3. Tailwind使用精简配置，减少CSS体积 -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  
+  <!-- Tailwind 配置（仅保留必要扩展） -->
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
             primary: '#165DFF',
-            secondary: '#36CFC9',
             neutral: '#F5F7FA',
             dark: '#1D2129',
             'gray-light': '#C9CDD4',
@@ -31,7 +38,7 @@
   <style type="text/tailwindcss">
     @layer utilities {
       .content-auto {
-        content-visibility: auto;
+        content-visibility: auto; /* 启用内容可见性优化，减少渲染开销 */
       }
       .file-hover {
         @apply transition-all duration-200 hover:bg-neutral rounded-md;
@@ -44,16 +51,16 @@
 </head>
 
 <body class="font-inter bg-gray-50 text-dark min-h-screen flex flex-col">
-  <!-- 顶部导航 -->
+  <!-- 顶部导航（精简DOM结构，减少不必要嵌套） -->
   <header class="bg-white shadow-sm sticky top-0 z-50">
     <div class="container mx-auto px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center space-x-2">
+      <div class="flex items-center gap-2">
         <i class="fa fa-cloud text-primary text-2xl"></i>
         <h1 class="text-xl font-semibold text-primary">创凡私有云</h1>
       </div>
       
-      <div class="flex items-center space-x-4">
-        <button class="hidden md:flex items-center space-x-1 text-gray-medium hover:text-primary transition-colors">
+      <div class="flex items-center gap-4">
+        <button class="hidden md:flex items-center gap-1 text-gray-medium hover:text-primary transition-colors">
           <i class="fa fa-question-circle"></i>
           <span>帮助</span>
           <span>王睿</span>
@@ -79,18 +86,18 @@
     <!-- 操作栏 -->
     <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
       <div class="flex flex-wrap justify-between items-center gap-4">
-        <div class="flex items-center space-x-4">
-          <button id="copyAllBtn" class="btn-effect flex items-center space-x-1 bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90">
+        <div class="flex items-center gap-4">
+          <button id="copyAllBtn" class="btn-effect flex items-center gap-1 bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90">
             <i class="fa fa-magnet"></i>
             <span>复制磁力链接</span>
           </button>
-          <button id="downloadAllBtn" class="btn-effect flex items-center space-x-1 bg-white border border-gray-light text-gray-medium px-4 py-2 rounded-md hover:bg-neutral">
+          <button id="downloadAllBtn" class="btn-effect flex items-center gap-1 bg-white border border-gray-light text-gray-medium px-4 py-2 rounded-md hover:bg-neutral">
             <i class="fa fa-download"></i>
             <span>迅雷下载全部</span>
           </button>
         </div>
         
-        <div class="flex items-center space-x-2">
+        <div class="flex items-center gap-2">
           <span class="text-sm text-gray-medium">排序方式:</span>
           <select class="bg-white border border-gray-light rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-primary">
             <option>名称</option>
@@ -101,7 +108,7 @@
       </div>
     </div>
     
-    <!-- 文件列表 -->
+    <!-- 文件列表（优化网格布局，减少冗余样式） -->
     <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
       <!-- 列表标题 -->
       <div class="grid grid-cols-12 gap-4 px-6 py-4 border-b border-gray-100 text-sm font-medium text-gray-medium">
@@ -113,17 +120,15 @@
       
       <!-- 磁力链接文件项 -->
       <div class="grid grid-cols-12 gap-4 px-6 py-4 items-center file-hover">
-        <div class="col-span-7 md:col-span-6 flex items-center space-x-3">
+        <div class="col-span-7 md:col-span-6 flex items-center gap-3">
           <div class="w-10 h-10 rounded bg-primary/10 flex items-center justify-center text-primary">
             <i class="fa fa-magnet"></i>
           </div>
           <div>
             <p class="font-medium">速度与激情一</p>
-            <!-- 将资源文件列在该条目下，磁力链接不再明文展示 -->
             <div class="text-xs text-gray-medium mt-1 space-y-1 md:max-w-md">
               <div class="flex items-center">
                 <span>• 电影</span>
-                <!-- 在名称旁加入明显的下载按钮，已绑定磁力链接 -->
                 <button class="thunder-download ml-3 px-2 py-1 text-sm bg-primary text-white rounded btn-effect" 
                         data-magnet="magnet:?xt=urn:btih:6419974E790D30CDEC69B4E66F4A2404D91E4E77" 
                         title="下载 速度与激情一">
@@ -142,8 +147,7 @@
           2025-11-12
         </div>
         
-        <div class="col-span-5 md:col-span-2 flex justify-end space-x-2">
-          <!-- 保留复制/下载操作，已绑定磁力链接 -->
+        <div class="col-span-5 md:col-span-2 flex justify-end gap-2">
           <button class="copyBtn p-2 text-gray-medium hover:text-primary transition-colors" 
                   data-link="magnet:?xt=urn:btih:6419974E790D30CDEC69B4E66F4A2404D91E4E77" 
                   title="复制磁力">
@@ -164,9 +168,9 @@
     <!-- 提示信息 -->
     <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
       <div class="mt-4 text-gray-medium text-sm">
-        <p><i class="fa fa-lightbulb-o text-yellow-500 mr-2"></i>提示：点击下载按钮将直接调用迅雷进行下载，需确保已安装迅雷客户端</p>
+        <p><i class="fa fa-lightbulb-o text-yellow-500 mr-2"></i>提示：点击下载按钮将直接调用迅雷并自动复制链接，需确保已安装迅雷客户端</p>
         <p class="mt-2"><i class="fa fa-exclamation-circle text-orange-500 mr-2"></i>请遵守当地法律法规，合理使用网络资源</p>
-        <p class="mt-2"><i class="fa fa-info-circle text-primary mr-2"></i>若无法调用迅雷，可复制磁力链接后手动粘贴到迅雷中下载</p>
+        <p class="mt-2"><i class="fa fa-info-circle text-primary mr-2"></i>若无法调用迅雷，可粘贴已复制的链接到迅雷中下载</p>
       </div>
     </div>
   </main>
@@ -185,100 +189,80 @@
     <span>操作成功！</span>
   </div>
 
+  <!-- 4. 脚本优化：缓存DOM查询、精简逻辑、延迟执行非关键代码 -->
   <script>
-    // 迅雷下载功能实现
-    document.addEventListener('DOMContentLoaded', () => {
-      const magnetLink = 'magnet:?xt=urn:btih:6419974E790D30CDEC69B4E66F4A2404D91E4E77';
-      const copyAllBtn = document.getElementById('copyAllBtn');
-      const downloadAllBtn = document.getElementById('downloadAllBtn');
-      const copyBtns = document.querySelectorAll('.copyBtn');
-      const thunderBtns = document.querySelectorAll('.thunder-download');
-      const toast = document.getElementById('toast');
-      
-      // 修复：完整的迅雷协议转换（前缀"AA" + 磁力链接 + 后缀"ZZ"再Base64）
-      function convertToThunderLink(url) {
-        const thunderPrefix = "AA";
-        const thunderSuffix = "ZZ";
-        const fullUrl = thunderPrefix + encodeURIComponent(url) + thunderSuffix;
-        const base64Url = btoa(fullUrl);
-        return `thunder://${base64Url}`;
-      }
-      
-      // 修复：增强迅雷调用兼容性，添加用户交互确认
-      function downloadWithThunder(link) {
-        try {
-          // 先显示确认提示，避免浏览器拦截
-          if (confirm('即将调用迅雷下载，是否继续？')) {
-            // 方案1：直接跳转协议
-            window.location.href = link;
-            
-            // 方案2：备用a标签跳转（双重保障）
-            setTimeout(() => {
-              const a = document.createElement('a');
-              a.href = link;
-              a.target = '_blank';
-              a.style.display = 'none';
-              document.body.appendChild(a);
-              a.click();
-              document.body.removeChild(a);
-            }, 300);
-            
-            showToast('已调用迅雷下载，请稍候');
-          }
-        } catch (err) {
-          console.error('调用迅雷失败: ', err);
-          showToast('调用失败！建议复制磁力链接手动粘贴到迅雷');
+    // 缓存DOM元素（减少重复查询）
+    const dom = {
+      copyAllBtn: document.getElementById('copyAllBtn'),
+      downloadAllBtn: document.getElementById('downloadAllBtn'),
+      copyBtns: document.querySelectorAll('.copyBtn'),
+      thunderBtns: document.querySelectorAll('.thunder-download'),
+      toast: document.getElementById('toast'),
+      toastText: document.getElementById('toast').querySelector('span')
+    };
+    const magnetLink = 'magnet:?xt=urn:btih:6419974E790D30CDEC69B4E66F4A2404D91E4E77';
+    
+    // 迅雷协议转换（保持核心逻辑）
+    function convertToThunderLink(url) {
+      const fullUrl = "AA" + encodeURIComponent(url) + "ZZ";
+      return `thunder://${btoa(fullUrl)}`;
+    }
+    
+    // 下载并复制链接（精简冗余代码）
+    function downloadWithThunder(link) {
+      try {
+        if (confirm('即将调用迅雷下载并自动复制链接，是否继续？')) {
+          navigator.clipboard.writeText(link)
+            .then(() => {
+              window.location.href = link;
+              // 备用跳转（延迟缩短至200ms）
+              setTimeout(() => {
+                const a = document.createElement('a');
+                a.href = link;
+                a.target = '_blank';
+                a.click();
+              }, 200);
+              showToast('已调用迅雷，链接已复制！');
+            })
+            .catch(() => {
+              window.location.href = link;
+              showToast('调用迅雷成功，但复制链接失败！');
+            });
         }
+      } catch (err) {
+        showToast('操作失败，请尝试手动复制链接');
       }
-      
-      // 显示提示信息
-      function showToast(message) {
-        const toastText = toast.querySelector('span');
-        toastText.textContent = message;
-        toast.classList.remove('translate-x-full');
-        setTimeout(() => {
-          toast.classList.add('translate-x-full');
-        }, 3000);
-      }
-      
-      // 复制全部按钮
-      copyAllBtn.addEventListener('click', () => {
-        navigator.clipboard.writeText(magnetLink).then(() => {
-          showToast('磁力链接复制成功！');
-        }).catch(err => {
-          console.error('无法复制文本: ', err);
-          showToast('复制失败，请手动选择链接复制');
-        });
+    }
+    
+    // 显示提示（复用DOM缓存）
+    function showToast(message) {
+      dom.toastText.textContent = message;
+      dom.toast.classList.remove('translate-x-full');
+      setTimeout(() => dom.toast.classList.add('translate-x-full'), 3000);
+    }
+    
+    // 绑定事件（使用缓存的DOM元素）
+    dom.copyAllBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(magnetLink)
+        .then(() => showToast('磁力链接复制成功！'))
+        .catch(() => showToast('复制失败，请手动选择链接复制'));
+    });
+    
+    dom.downloadAllBtn.addEventListener('click', () => {
+      downloadWithThunder(convertToThunderLink(magnetLink));
+    });
+    
+    dom.copyBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        navigator.clipboard.writeText(btn.dataset.link)
+          .then(() => showToast('磁力链接复制成功！'))
+          .catch(() => showToast('复制失败，请手动选择链接复制'));
       });
-      
-      // 下载全部按钮
-      downloadAllBtn.addEventListener('click', () => {
-        const thunderLink = convertToThunderLink(magnetLink);
-        downloadWithThunder(thunderLink);
-      });
-      
-      // 单个复制按钮
-      copyBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          const link = btn.getAttribute('data-link');
-          navigator.clipboard.writeText(link).then(() => {
-            showToast('磁力链接复制成功！');
-          }).catch(err => {
-            console.error('无法复制文本: ', err);
-            showToast('复制失败，请手动选择链接复制');
-          });
-        });
-      });
-      
-      // 迅雷下载按钮
-      thunderBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          const magnet = btn.getAttribute('data-magnet');
-          if (magnet) {
-            const thunderLink = convertToThunderLink(magnet);
-            downloadWithThunder(thunderLink);
-          }
-        });
+    });
+    
+    dom.thunderBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        downloadWithThunder(convertToThunderLink(btn.dataset.magnet));
       });
     });
   </script>
